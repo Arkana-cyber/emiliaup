@@ -1,9 +1,14 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>Emilia Uploader</title>
+    <meta name="keywords" content="emilia uploader, emilia, file uploader, image hosting, zezen radcliffe">
+    <meta name="description" content="Emilia Uploader - A premium high-speed media uploading interface developed by Zezen Radcliffe.">
+    <meta name="author" content="Zezen Radcliffe">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -33,8 +38,16 @@
 
         .uploader-box:hover {
             border-color: #38bdf8;
-            background: rgba(56, 189, 248, 0.03);
-            transform: translateY(-2px);
+            background: rgba(56, 189, 248, 0.05);
+        }
+
+        .preview-container img, .preview-container video {
+            max-height: 220px;
+            border-radius: 16px;
+            margin: 0 auto;
+            display: block;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
         }
 
         .btn-elite {
@@ -43,74 +56,61 @@
             transition: all 0.3s ease;
         }
 
-        .btn-elite:hover {
+        .btn-elite:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 15px 25px -5px rgba(37, 99, 235, 0.5);
             filter: brightness(1.1);
         }
 
         .history-card {
             background: rgba(30, 41, 59, 0.4);
             border-left: 3px solid #38bdf8;
-            transition: all 0.3s ease;
         }
 
-        .history-card:hover {
-            background: rgba(30, 41, 59, 0.6);
-            transform: scale(1.02);
-        }
-
-        /* Animasi Loading */
-        .shimmer {
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
     </style>
 </head>
 <body class="flex items-center justify-center p-6">
 
-    <div class="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         <div class="lg:col-span-7 space-y-6">
-            <header class="mb-8">
+            <header>
                 <div class="flex items-center gap-3 mb-2">
-                    <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40">
-                        <i class="fas fa-bolt text-white"></i>
+                    <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+                        <i class="fas fa-bolt text-white text-xl"></i>
                     </div>
                     <h1 class="text-4xl font-extrabold tracking-tight">Emilia <span class="text-blue-500">Uploader</span></h1>
                 </div>
-                <p class="text-slate-400 font-medium">Developer: <span class="text-blue-400">Zezen Radcliffe</span></p>
+                <p class="text-slate-400 font-medium">System Operator: <span class="text-blue-400">Zezen Radcliffe</span></p>
             </header>
 
-            <div class="glass-premium rounded-3xl p-8 md:p-12">
-                <div id="drop-zone" class="uploader-box rounded-2xl p-10 text-center cursor-pointer group">
+            <div class="glass-premium rounded-3xl p-8 md:p-10">
+                <div id="drop-zone" class="uploader-box rounded-2xl p-8 text-center cursor-pointer relative">
                     <input type="file" id="file-input" class="hidden" accept="image/*,video/*">
                     
-                    <div class="mb-6 relative inline-block">
-                        <div class="w-20 h-20 bg-slate-800 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-                            <i class="fas fa-cloud-arrow-up text-3xl text-blue-500"></i>
+                    <div id="upload-placeholder">
+                        <div class="mb-5">
+                            <div class="w-20 h-20 bg-slate-800/50 rounded-full flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
+                                <i class="fas fa-cloud-arrow-up text-3xl text-blue-500"></i>
+                            </div>
                         </div>
+                        <h3 class="text-xl font-bold text-slate-100" id="file-label">Drop Media Here</h3>
+                        <p class="text-slate-400 text-sm mt-2">Supports high-res photos and videos</p>
                     </div>
 
-                    <h3 class="text-xl font-bold mb-2 text-slate-100" id="file-label">Upload Media Baru</h3>
-                    <p class="text-slate-400 text-sm">Pilih foto atau video dari perangkatmu</p>
+                    <div id="preview-area" class="preview-container hidden"></div>
                 </div>
 
-                <button id="upload-btn" class="btn-elite w-full mt-8 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2">
-                    <i class="fas fa-paper-plane text-sm"></i> EXECUTE PROCESS
+                <button id="upload-btn" class="btn-elite w-full mt-8 text-white font-bold py-5 rounded-2xl flex items-center justify-center gap-3 text-lg">
+                    <i class="fas fa-rocket"></i> INITIALIZE UPLOAD
                 </button>
 
-                <div id="result-box" class="mt-10 hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <label class="text-[10px] font-bold text-blue-400 uppercase tracking-[0.2em] mb-3 block">File URL Result</label>
-                    <div class="flex gap-2">
+                <div id="result-box" class="mt-8 hidden">
+                    <label class="text-[10px] font-bold text-blue-400 uppercase tracking-[0.3em] mb-3 block">Global Asset URL</label>
+                    <div class="flex gap-3">
                         <input type="text" id="url-output" readonly 
-                            class="w-full bg-slate-900/80 border border-white/5 rounded-xl px-5 py-4 text-sm font-mono text-blue-300 focus:outline-none shadow-inner">
+                            class="w-full bg-slate-900 border border-white/10 rounded-xl px-5 py-4 text-sm font-mono text-blue-300 focus:outline-none">
                         <button id="copy-btn" class="bg-slate-800 px-6 rounded-xl hover:bg-slate-700 transition-all border border-white/10 active:scale-95">
                             <i class="fas fa-copy"></i>
                         </button>
@@ -120,29 +120,28 @@
         </div>
 
         <div class="lg:col-span-5">
-            <div class="glass-premium rounded-3xl p-8 h-full min-h-[400px] flex flex-col">
+            <div class="glass-premium rounded-3xl p-8 h-full flex flex-col">
                 <div class="flex items-center justify-between mb-8">
-                    <h2 class="text-xl font-bold flex items-center gap-2">
-                        <i class="fas fa-clock-rotate-left text-blue-500"></i> 
-                        Riwayat
+                    <h2 class="text-xl font-bold flex items-center gap-3">
+                        <i class="fas fa-terminal text-blue-500"></i> 
+                        Activity Log
                     </h2>
-                    <span class="px-3 py-1 bg-blue-500/10 text-blue-400 text-[10px] font-bold rounded-full border border-blue-500/20 uppercase tracking-tighter">Live Session</span>
+                    <span class="px-3 py-1 bg-blue-500/10 text-blue-400 text-[10px] font-bold rounded-full border border-blue-500/20">LIVE</span>
                 </div>
 
-                <div id="history-list" class="space-y-4 overflow-y-auto max-h-[500px] pr-2 custom-scrollbar">
-                    <div id="empty-history" class="text-center py-20 opacity-30">
-                        <i class="fas fa-folder-open text-4xl mb-3"></i>
-                        <p class="text-sm">Belum ada aktivitas</p>
+                <div id="history-list" class="space-y-4 overflow-y-auto max-h-[550px] pr-2 custom-scrollbar">
+                    <div id="empty-history" class="text-center py-20 opacity-20">
+                        <i class="fas fa-database text-5xl mb-4"></i>
+                        <p class="text-sm font-medium uppercase tracking-widest">No Logs Detected</p>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 
     <script>
         const CONFIG = {
-            token: "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",
+            token: "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", // Note: Ensure this token is still active
             owner: "Arkana-cyber",
             repo: "image-",
             branch: "main"
@@ -155,22 +154,42 @@
         const resultBox = document.getElementById('result-box');
         const urlOutput = document.getElementById('url-output');
         const historyList = document.getElementById('history-list');
+        const previewArea = document.getElementById('preview-area');
+        const placeholder = document.getElementById('upload-placeholder');
 
         dropZone.onclick = () => fileInput.click();
 
         fileInput.onchange = () => {
-            if(fileInput.files[0]) {
-                fileLabel.innerText = fileInput.files[0].name;
-                fileLabel.classList.replace('text-slate-100', 'text-blue-400');
+            const file = fileInput.files[0];
+            if(file) {
+                placeholder.classList.add('hidden');
+                previewArea.classList.remove('hidden');
+                previewArea.innerHTML = ''; 
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    if(file.type.startsWith('image/')) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        previewArea.appendChild(img);
+                    } else if(file.type.startsWith('video/')) {
+                        const video = document.createElement('video');
+                        video.src = e.target.result;
+                        video.controls = true;
+                        previewArea.appendChild(video);
+                    }
+                    fileLabel.innerText = file.name;
+                }
+                reader.readAsDataURL(file);
             }
         };
 
         uploadBtn.onclick = async () => {
             const file = fileInput.files[0];
-            if(!file) return alert("Harap masukkan file!");
+            if(!file) return alert("System requires a file to proceed!");
 
             uploadBtn.disabled = true;
-            uploadBtn.innerHTML = `<i class="fas fa-spinner animate-spin"></i> PROCESSING...`;
+            uploadBtn.innerHTML = `<i class="fas fa-sync-alt animate-spin"></i> ENCRYPTING & UPLOADING...`;
 
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -187,11 +206,13 @@
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
-                            message: `Asset Uploaded by Zezen`,
+                            message: `Asset deployed: ${file.name}`,
                             content: base64,
                             branch: CONFIG.branch
                         })
                     });
+
+                    const data = await res.json();
 
                     if(res.ok) {
                         const finalUrl = `https://cdn.jsdelivr.net/gh/${CONFIG.owner}/${CONFIG.repo}@${CONFIG.branch}/${fileName}`;
@@ -199,13 +220,15 @@
                         resultBox.classList.remove('hidden');
                         addToHistory(file.name, finalUrl);
                     } else {
-                        alert("Gagal Upload. Cek pengaturan Repositori.");
+                        // Displaying detailed error from GitHub API
+                        alert(`Deployment Error: ${data.message}`);
+                        console.error(data);
                     }
                 } catch (e) {
-                    alert("Koneksi bermasalah.");
+                    alert("System Link Failure: Please check your internet connection.");
                 } finally {
                     uploadBtn.disabled = false;
-                    uploadBtn.innerHTML = `<i class="fas fa-paper-plane text-sm"></i> EXECUTE PROCESS`;
+                    uploadBtn.innerHTML = `<i class="fas fa-rocket"></i> INITIALIZE UPLOAD`;
                 }
             };
         };
@@ -213,13 +236,13 @@
         function addToHistory(name, url) {
             document.getElementById('empty-history')?.remove();
             const div = document.createElement('div');
-            div.className = "history-card p-4 rounded-2xl flex items-center justify-between";
+            div.className = "history-card p-4 rounded-xl flex items-center justify-between";
             div.innerHTML = `
                 <div class="truncate max-w-[80%]">
                     <p class="text-xs font-bold text-slate-100 truncate">${name}</p>
                     <p class="text-[10px] text-blue-500 font-mono truncate mt-1">${url}</p>
                 </div>
-                <button onclick="copyToClipboard('${url}')" class="text-slate-500 hover:text-blue-400 p-2 transition-colors">
+                <button onclick="copyToClipboard('${url}')" class="text-slate-500 hover:text-blue-400 p-2">
                     <i class="fas fa-link text-xs"></i>
                 </button>
             `;
@@ -228,7 +251,7 @@
 
         window.copyToClipboard = (text) => {
             navigator.clipboard.writeText(text);
-            alert("URL disalin ke clipboard!");
+            alert("URL copied to command center!");
         };
 
         document.getElementById('copy-btn').onclick = () => copyToClipboard(urlOutput.value);
