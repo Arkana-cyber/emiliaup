@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emilia Uploader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #020617;
+            color: #f8fafc;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(30, 64, 175, 0.15) 0%, transparent 35%),
+                radial-gradient(circle at 100% 100%, rgba(79, 70, 229, 0.1) 0%, transparent 35%);
+        }
+
+        .glass-premium {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+
+        .uploader-box {
+            border: 2px dashed rgba(56, 189, 248, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .uploader-box:hover {
+            border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.03);
+            transform: translateY(-2px);
+        }
+
+        .btn-elite {
+            background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+            box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-elite:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -5px rgba(37, 99, 235, 0.5);
+            filter: brightness(1.1);
+        }
+
+        .history-card {
+            background: rgba(30, 41, 59, 0.4);
+            border-left: 3px solid #38bdf8;
+            transition: all 0.3s ease;
+        }
+
+        .history-card:hover {
+            background: rgba(30, 41, 59, 0.6);
+            transform: scale(1.02);
+        }
+
+        /* Animasi Loading */
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-6">
+
+    <div class="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <div class="lg:col-span-7 space-y-6">
+            <header class="mb-8">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40">
+                        <i class="fas fa-bolt text-white"></i>
+                    </div>
+                    <h1 class="text-4xl font-extrabold tracking-tight">Emilia <span class="text-blue-500">Uploader</span></h1>
+                </div>
+                <p class="text-slate-400 font-medium">Developer: <span class="text-blue-400">Zezen Radcliffe</span></p>
+            </header>
+
+            <div class="glass-premium rounded-3xl p-8 md:p-12">
+                <div id="drop-zone" class="uploader-box rounded-2xl p-10 text-center cursor-pointer group">
+                    <input type="file" id="file-input" class="hidden" accept="image/*,video/*">
+                    
+                    <div class="mb-6 relative inline-block">
+                        <div class="w-20 h-20 bg-slate-800 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                            <i class="fas fa-cloud-arrow-up text-3xl text-blue-500"></i>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-bold mb-2 text-slate-100" id="file-label">Upload Media Baru</h3>
+                    <p class="text-slate-400 text-sm">Pilih foto atau video dari perangkatmu</p>
+                </div>
+
+                <button id="upload-btn" class="btn-elite w-full mt-8 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2">
+                    <i class="fas fa-paper-plane text-sm"></i> EXECUTE PROCESS
+                </button>
+
+                <div id="result-box" class="mt-10 hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <label class="text-[10px] font-bold text-blue-400 uppercase tracking-[0.2em] mb-3 block">File URL Result</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="url-output" readonly 
+                            class="w-full bg-slate-900/80 border border-white/5 rounded-xl px-5 py-4 text-sm font-mono text-blue-300 focus:outline-none shadow-inner">
+                        <button id="copy-btn" class="bg-slate-800 px-6 rounded-xl hover:bg-slate-700 transition-all border border-white/10 active:scale-95">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-5">
+            <div class="glass-premium rounded-3xl p-8 h-full min-h-[400px] flex flex-col">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-xl font-bold flex items-center gap-2">
+                        <i class="fas fa-clock-rotate-left text-blue-500"></i> 
+                        Riwayat
+                    </h2>
+                    <span class="px-3 py-1 bg-blue-500/10 text-blue-400 text-[10px] font-bold rounded-full border border-blue-500/20 uppercase tracking-tighter">Live Session</span>
+                </div>
+
+                <div id="history-list" class="space-y-4 overflow-y-auto max-h-[500px] pr-2 custom-scrollbar">
+                    <div id="empty-history" class="text-center py-20 opacity-30">
+                        <i class="fas fa-folder-open text-4xl mb-3"></i>
+                        <p class="text-sm">Belum ada aktivitas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const CONFIG = {
+            token: "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",
+            owner: "Arkana-cyber",
+            repo: "image",
+            branch: "main"
+        };
+
+        const fileInput = document.getElementById('file-input');
+        const dropZone = document.getElementById('drop-zone');
+        const uploadBtn = document.getElementById('upload-btn');
+        const fileLabel = document.getElementById('file-label');
+        const resultBox = document.getElementById('result-box');
+        const urlOutput = document.getElementById('url-output');
+        const historyList = document.getElementById('history-list');
+
+        dropZone.onclick = () => fileInput.click();
+
+        fileInput.onchange = () => {
+            if(fileInput.files[0]) {
+                fileLabel.innerText = fileInput.files[0].name;
+                fileLabel.classList.replace('text-slate-100', 'text-blue-400');
+            }
+        };
+
+        uploadBtn.onclick = async () => {
+            const file = fileInput.files[0];
+            if(!file) return alert("Harap masukkan file!");
+
+            uploadBtn.disabled = true;
+            uploadBtn.innerHTML = `<i class="fas fa-spinner animate-spin"></i> PROCESSING...`;
+
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = async () => {
+                const base64 = reader.result.split(',')[1];
+                const fileName = `media/${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+                const api = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${fileName}`;
+
+                try {
+                    const res = await fetch(api, {
+                        method: "PUT",
+                        headers: { 
+                            "Authorization": `token ${CONFIG.token}`,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            message: `Asset Uploaded by Zezen`,
+                            content: base64,
+                            branch: CONFIG.branch
+                        })
+                    });
+
+                    if(res.ok) {
+                        const finalUrl = `https://cdn.jsdelivr.net/gh/${CONFIG.owner}/${CONFIG.repo}@${CONFIG.branch}/${fileName}`;
+                        urlOutput.value = finalUrl;
+                        resultBox.classList.remove('hidden');
+                        addToHistory(file.name, finalUrl);
+                    } else {
+                        alert("Gagal Upload. Cek pengaturan Repositori.");
+                    }
+                } catch (e) {
+                    alert("Koneksi bermasalah.");
+                } finally {
+                    uploadBtn.disabled = false;
+                    uploadBtn.innerHTML = `<i class="fas fa-paper-plane text-sm"></i> EXECUTE PROCESS`;
+                }
+            };
+        };
+
+        function addToHistory(name, url) {
+            document.getElementById('empty-history')?.remove();
+            const div = document.createElement('div');
+            div.className = "history-card p-4 rounded-2xl flex items-center justify-between";
+            div.innerHTML = `
+                <div class="truncate max-w-[80%]">
+                    <p class="text-xs font-bold text-slate-100 truncate">${name}</p>
+                    <p class="text-[10px] text-blue-500 font-mono truncate mt-1">${url}</p>
+                </div>
+                <button onclick="copyToClipboard('${url}')" class="text-slate-500 hover:text-blue-400 p-2 transition-colors">
+                    <i class="fas fa-link text-xs"></i>
+                </button>
+            `;
+            historyList.prepend(div);
+        }
+
+        window.copyToClipboard = (text) => {
+            navigator.clipboard.writeText(text);
+            alert("URL disalin ke clipboard!");
+        };
+
+        document.getElementById('copy-btn').onclick = () => copyToClipboard(urlOutput.value);
+    </script>
+</body>
+  </html>
+
