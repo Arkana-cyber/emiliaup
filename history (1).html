@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History Emilia Uploader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="min-h-screen flex flex-col p-4 md:p-8">
+    
+    <header class="w-full max-w-7xl mx-auto mb-10 flex items-center justify-between py-6 border-b border-white/5 relative z-50">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-lg bg-blue-600 flex items-center justify-center shadow-lg border border-blue-400/30">
+                <i class="fas fa-history text-xl text-white"></i>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold tracking-wider uppercase text-blue-400">HISTORY</h1>
+                <p class="text-[10px] tracking-widest uppercase text-white/40">Dev: Zezen Radcliffe</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <a href="index.html" title="Home" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 text-white/50 hover:bg-blue-600 hover:text-white transition-all">
+                <i class="fas fa-home text-sm"></i>
+            </a>
+            <a href="history.html" title="History" class="w-10 h-10 flex items-center justify-center rounded-xl bg-blue-600/20 border border-blue-500/40 text-blue-400">
+                <i class="fas fa-history text-sm"></i>
+            </a>
+        </div>
+    </header>
+
+    <main class="w-full max-w-6xl mx-auto flex-grow">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-xl font-semibold flex items-center gap-2">
+                <span class="w-2 h-8 bg-blue-500 rounded-full"></span>
+                Recent Deployments
+            </h2>
+            <button onclick="clearHistory()" class="text-[10px] font-bold tracking-widest uppercase text-red-400 hover:bg-red-500/10 px-4 py-2 rounded-lg transition-colors border border-red-500/20">
+                <i class="fas fa-broom mr-2"></i> Purge All
+            </button>
+        </div>
+
+        <div id="history-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div class="col-span-full text-center py-20 opacity-20">
+                <i class="fas fa-spinner fa-spin text-4xl mb-4"></i>
+                <p class="uppercase tracking-widest text-xs">Synchronizing Assets...</p>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { loadHistory, deleteHistoryItem } from './script.js';
+        
+        document.addEventListener('DOMContentLoaded', loadHistory);
+        
+        // Fungsi Hapus Satuan (ya)
+        window.deleteItem = (id) => {
+            if(confirm('Hapus item ini dari riwayat?')) {
+                deleteHistoryItem(id);
+            }
+        };
+
+        // Perbaikan key localStorage (ya)
+        window.clearHistory = () => {
+            if(confirm('Hapus SEMUA riwayat upload?')) {
+                localStorage.removeItem('emilia_history');
+                location.reload();
+            }
+        };
+    </script>
+</body>
+</html>

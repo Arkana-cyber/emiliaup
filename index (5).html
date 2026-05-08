@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emilia Uploader</title>
+    <link rel="icon" type="image/jpeg" href="img/icon.jpg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="min-h-screen flex flex-col p-4 md:p-8">
+
+    <header class="w-full max-w-7xl mx-auto mb-10 flex items-center justify-between py-6 border-b border-white/5 relative z-50">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-lg bg-blue-600 flex items-center justify-center shadow-lg border border-blue-400/30">
+                <i class="fas fa-server text-xl text-white"></i>
+            </div>
+            <div>
+                <h1 class="text-lg md:text-xl font-bold tracking-wider uppercase text-blue-400">EMILIA UPLOADER</h1>
+                <p class="text-[10px] tracking-widest uppercase text-white/40">Dev: Zezen Radcliffe</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <a href="index.html" title="Home" class="w-10 h-10 flex items-center justify-center rounded-xl bg-blue-600/10 border border-blue-500/20 text-blue-400 hover:bg-blue-600 hover:text-white transition-all">
+                <i class="fas fa-home text-sm"></i>
+            </a>
+            <a href="history.html" title="History" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 text-white/50 hover:bg-white/10 hover:text-white transition-all">
+                <i class="fas fa-history text-sm"></i>
+            </a>
+        </div>
+    </header>
+
+    <main class="w-full max-w-3xl mx-auto flex-grow flex flex-col justify-center">
+        <div class="glass-premium rounded-[2.5rem] p-10 uploader-box text-center relative overflow-hidden cursor-pointer group" id="drop-zone">
+            <input type="file" id="file-input" class="hidden" accept="image/*,video/*">
+            <div id="upload-placeholder">
+                <div class="cloud-anim mb-6">
+                    <i class="fas fa-cloud text-5xl text-blue-500"></i>
+                    <i class="fas fa-arrow-up cloud-arrow text-white"></i>
+                </div>
+                <p class="text-xl font-bold tracking-widest text-white uppercase group-hover:text-blue-400 transition-colors">Push to Cloud</p>
+                <p class="text-slate-500 text-[10px] mt-2 uppercase tracking-widest">Click to Select Asset</p>
+            </div>
+            <div id="preview-area" class="hidden relative z-10"></div>
+            <div class="glass-shine"></div>
+        </div>
+        
+        <button id="upload-btn" class="w-full btn-elite py-5 mt-8 rounded-2xl font-bold uppercase tracking-widest text-xs">
+            <i class="fas fa-bolt-lightning mr-2"></i> Initialize Deployment
+        </button>
+
+        <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass-premium rounded-3xl p-6 flex items-center justify-between overflow-hidden relative">
+                <div class="relative z-10">
+                    <p class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Cloud Statistics</p>
+                    <h2 class="text-2xl font-black text-white mt-1" id="total-hits">0</h2>
+                    <p class="text-[8px] text-white/30 uppercase tracking-[0.2em]">Total Assets Deployed</p>
+                </div>
+                <div class="animal-path">
+                    <i class="fas fa-cat text-3xl text-white/5 animate-walk"></i>
+                </div>
+            </div>
+
+            <div class="glass-premium rounded-3xl p-6 relative overflow-hidden">
+                <p class="text-[10px] font-bold text-green-400 uppercase tracking-widest">Storage Health</p>
+                <div class="flex items-center gap-4 mt-2">
+                    <div class="flex-grow h-1.5 bg-white/5 rounded-full overflow-hidden">
+                        <div class="h-full bg-green-500 w-[85%]"></div>
+                    </div>
+                    <span class="text-[10px] font-bold text-white">OPTIMAL</span>
+                </div>
+                <p class="text-[8px] text-white/30 mt-2 uppercase tracking-[0.2em]">Encryption: AES-256 Active</p>
+            </div>
+        </div>
+
+        <div id="result-box" class="hidden mt-6 glass-premium rounded-3xl p-6 border-l-4 border-blue-500">
+            <div class="flex gap-3">
+                <input type="text" id="url-output" readonly class="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-3 text-xs font-mono text-blue-200">
+                <button id="copy-btn" class="bg-blue-600/20 px-5 rounded-xl border border-blue-500/30 hover:bg-blue-500 transition-all">
+                    <i class="fas fa-copy text-blue-400"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
